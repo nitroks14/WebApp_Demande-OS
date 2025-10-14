@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demande OS - Outlook</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; }
+label { display: block; margin-top: 10px; font-weight: bold; }
+input, select { width: 100%; padding: 8px; margin-top: 5px; }
+button { margin-top: 20px; padding: 12px; font-size: 16px; background-color: #0078D4; color: white; border: none; border-radius: 4px; }
+button:hover { background-color: #005A9E; }
+</style>
+</head>
+<body>
+<h2>Demande de création d'OS</h2>
+<form id="osForm">
+  <label for="nomClient">Nom du client :</label>
+  <input type="text" id="nomClient" name="nomClient" required>
+
+  <label for="machine">Type et N° de la machine :</label>
+  <input type="text" id="machine" name="machine" required>
+
+  <label for="motif">Motif de l’OS :</label>
+  <select id="motif" name="motif" required>
+    <option value="Contrat d’entretien">Contrat d’entretien</option>
+    <option value="Installation">Installation</option>
+    <option value="Pré-installation">Pré-installation</option>
+    <option value="Réception usine (FAT)">Réception usine (FAT)</option>
+    <option value="Retravailler">Retravailler</option>
+    <option value="Garantie">Garantie</option>
+    <option value="Effort commercial – Service">Effort commercial – Service</option>
+    <option value="Effort commercial – Ventes">Effort commercial – Ventes</option>
+    <option value="Visite client">Visite client</option>
+    <option value="Technicien en formation">Technicien en formation</option>
+    <option value="Autre">Autre</option>
+  </select>
+
+  <label for="dates">Date(s) de l’intervention :</label>
+  <input type="text" id="dates" name="dates" required>
+
+  <label for="objectif">Objectif de l’intervention :</label>
+  <input type="text" id="objectif" name="objectif" required>
+
+  <label for="contact">Nom d’un contact chez le client :</label>
+  <input type="text" id="contact" name="contact" required>
+
+  <button type="button" onclick="openOutlook()">Ouvrir le brouillon dans Outlook</button>
+</form>
+
+<script>
+function openOutlook() {
+  const nomClient = encodeURIComponent(document.getElementById('nomClient').value);
+  const machine = encodeURIComponent(document.getElementById('machine').value);
+  const motif = encodeURIComponent(document.getElementById('motif').value);
+  const dates = encodeURIComponent(document.getElementById('dates').value);
+  const objectif = encodeURIComponent(document.getElementById('objectif').value);
+  const contact = encodeURIComponent(document.getElementById('contact').value);
+
+  const subject = encodeURIComponent(`Demande de création d’OS – ${nomClient} – ${machine}`);
+  const body = encodeURIComponent(`Nom du client : ${decodeURIComponent(nomClient)}
+Type et N° de la machine : ${decodeURIComponent(machine)}
+Motif de l’OS : ${decodeURIComponent(motif)}
+Date(s) de l’intervention : ${decodeURIComponent(dates)}
+Objectif de l’intervention : ${decodeURIComponent(objectif)}
+Nom d’un contact chez le client : ${decodeURIComponent(contact)}`);
+
+  const outlookUrl = `ms-outlook://compose?to=MUFRmaintenance@multivac.fr&cc=Emmanuel.nicolas@multivac.fr&subject=${subject}&body=${body}`;
+
+  // Redirect to the Outlook URL
+  window.location.href = outlookUrl;
+}
+</script>
+</body>
+</html>
