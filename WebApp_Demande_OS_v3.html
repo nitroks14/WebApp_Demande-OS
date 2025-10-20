@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demande OS – Outlook (v3)</title>
+<style>
+  :root{--bg:#0b1224;--card:#0f172a;--text:#e5e7eb;--muted:#94a3b8;--accent:#2563eb;--accent2:#22c55e}
+  html,body{margin:0;padding:0;background:linear-gradient(180deg,#0b1224,#0c1731);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:860px;margin:0 auto;padding:22px}
+  h1{font-size:22px;margin:4px 0 16px}
+  .card{background:rgba(15,23,42,.82);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;backdrop-filter:blur(8px)}
+  .grid{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
+  label{font-size:13px;color:var(--muted);display:block;margin:2px 0}
+  input,select,textarea{width:100%;border:1px solid rgba(255,255,255,.14);background:#0b1020;color:var(--text);padding:10px 12px;border-radius:10px;font-size:15px}
+  textarea{min-height:100px}
+  .btn{margin-top:14px;padding:12px 16px;border:0;border-radius:12px;background:linear-gradient(90deg,var(--accent),#1d4ed8);color:white;font-weight:600;cursor:pointer}
+  .note{color:var(--muted);font-size:12px;margin-top:6px}
+  .hidden{display:none}
+  fieldset{border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px}
+  legend{padding:0 6px;color:var(--muted);font-size:12px}
+  .inline{display:flex;gap:18px;align-items:center}
+  .error{border-color:#ef4444!important}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>✉️ Demande de création d’OS → Brouillon Outlook</h1>
+    <div class="card">
+      <div class="grid">
+        <div>
+          <label>Nom du client</label>
+          <input id="client" placeholder="Ex. Broceliande VB" autocomplete="off" required>
+        </div>
+        <div>
+          <label>Type et N° de la machine</label>
+          <input id="machine" placeholder="Ex. R230 924" autocomplete="off" required>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:10px">
+        <div>
+          <label>Motif de l’OS</label>
+          <select id="motif" required>
+            <option value="contrat">Contrat d’entretien</option>
+            <option value="installation">Installation</option>
+            <option value="preinst">Pré‑installation</option>
+            <option value="fat">Réception usine (FAT)</option>
+            <option value="retravailler">Retravailler</option>
+            <option value="garantie">Garantie</option>
+            <option value="ec_service">Effort commercial – Service</option>
+            <option value="ec_ventes">Effort commercial – Ventes</option>
+            <option value="visite">Visite client</option>
+            <option value="formation">Technicien en formation</option>
+            <option value="autre">Autre…</option>
+          </select>
+        </div>
+        <div id="motifAutreBlock" class="hidden">
+          <label>Préciser le motif</label>
+          <input id="motifPrec" placeholder="Saisir le motif exact">
+        </div>
+      </div>
+
+      <div id="pnSdBlock" class="grid hidden" style="margin-top:10px">
+        <div>
+          <label>N° PN ou SD <small>(obligatoire pour FAT / Pré‑installation / Installation / Retravailler)</small></label>
+          <input id="pnSd" placeholder="Ex. PN123456 ou SD7890">
+        </div>
+      </div>
+
+      <div id="contratBlock" class="hidden" style="margin-top:10px">
+        <fieldset>
+          <legend>Contrat d’entretien — précisions</legend>
+          <div class="grid">
+            <div>
+              <label>OS splitté ?</label>
+              <div class="inline">
+                <label><input type="radio" name="split" value="Non" checked> Non</label>
+                <label><input type="radio" name="split" value="Oui"> Oui</label>
+              </div>
+            </div>
+            <div>
+              <label>OS de calibration ?</label>
+              <div class="inline">
+                <label><input type="radio" name="calibration" value="Non" checked> Non</label>
+                <label><input type="radio" name="calibration" value="Oui"> Oui</label>
+              </div>
+            </div>
+          </div>
+          <div id="splitTechBlock" class="grid hidden" style="margin-top:10px">
+            <div>
+              <label>Nom du technicien 1</label>
+              <input id="tech1" placeholder="Ex. Benoît Renou">
+            </div>
+            <div>
+              <label>Nom du technicien 2</label>
+              <input id="tech2" placeholder="Ex. Nicolas Duval">
+            </div>
+          </div>
+          <div class="note">Rappel : 1 Tech = 1 OS ; split exceptionnel si machine indisponible la journée entière. Toujours préciser si l’OS est splitté.</div>
+        </fieldset>
+      </div>
+
+      <div id="garantieBlock" class="grid hidden" style="margin-top:10px">
+        <div>
+          <label>Machine sous garantie ?</label>
+          <select id="garantieEtat">
+            <option value="À confirmer">À confirmer</option>
+            <option value="Oui">Oui</option>
+            <option value="Non">Non</option>
+          </select>
+        </div>
+        <div class="note" style="grid-column:1/-1">Vérifier la date de garantie avec l’assistante ; validation RTR si nécessaire.</div>
+      </div>
+
+      <div class="grid" style="margin-top:10px">
+        <div>
+          <label>Date(s) de l’intervention</label>
+          <input id="dates" placeholder="Ex. 16/09/2025 ou 16/09 et 17/09/2025">
+        </div>
+        <div>
+          <label>Nom d’un contact chez le client</label>
+          <input id="contact" placeholder="Ex. Hervé Marie">
+        </div>
+      </div>
+
+      <div style="margin-top:10px">
+        <label>Objectif de l’intervention</label>
+        <textarea id="objectif" placeholder="Ex. Contrat 2025 en double avec Benoît Renou"></textarea>
+      </div>
+
+      <button class="btn" id="btnOutlook" type="button">Ouvrir le brouillon dans Outlook</button>
+      <a id="deepLink" href="#" class="hidden">open</a>
+      <div class="note">À : MUFRmaintenance@multivac.fr · CC : Emmanuel.nicolas@multivac.fr — Ouverture en brouillon uniquement (jamais d’envoi auto).</div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const MOTIFS = {
+    contrat: "Contrat d’entretien",
+    installation: "Installation",
+    preinst: "Pré‑installation",
+    fat: "Réception usine (FAT)",
+    retravailler: "Retravailler",
+    garantie: "Garantie",
+    ec_service: "Effort commercial – Service",
+    ec_ventes: "Effort commercial – Ventes",
+    visite: "Visite client",
+    formation: "Technicien en formation",
+    autre: "Autre"
+  };
+
+  const needsPN = new Set(['fat','preinst','installation','retravailler']);
+
+  const $ = (id)=>document.getElementById(id);
+  const motifSel = $('motif');
+
+  function updateVisibility(){
+    const v = motifSel.value;
+    $('motifAutreBlock').classList.toggle('hidden', v !== 'autre');
+    $('pnSdBlock').classList.toggle('hidden', !needsPN.has(v));
+    $('contratBlock').classList.toggle('hidden', v !== 'contrat');
+    $('garantieBlock').classList.toggle('hidden', v !== 'garantie');
+  }
+
+  motifSel.addEventListener('change', updateVisibility);
+  updateVisibility();
+
+  // Split tech names show/hide
+  document.querySelectorAll('input[name="split"]').forEach(r=>{
+    r.addEventListener('change', ()=>{
+      const yes = document.querySelector('input[name="split"]:checked').value === 'Oui';
+      $('splitTechBlock').classList.toggle('hidden', !yes);
+    });
+  });
+
+  function enc(s){return encodeURIComponent(s).replace(/%20/g,'+');}
+
+  function build(){
+    const client = $('client').value.trim();
+    const machine = $('machine').value.trim();
+    const code = motifSel.value;
+    const motif = code==='autre' ? ($('motifPrec').value.trim()||'Autre') : MOTIFS[code];
+    const dates = $('dates').value.trim();
+    const objectif = $('objectif').value.trim();
+    const contact = $('contact').value.trim();
+
+    const pnSd = $('pnSd')? $('pnSd').value.trim():'';
+    const split = document.querySelector('input[name="split"]:checked')?.value || 'Non';
+    const calib = document.querySelector('input[name="calibration"]:checked')?.value || 'Non';
+    const garantieEtat = $('garantieEtat')? $('garantieEtat').value:'À confirmer';
+    const tech1 = $('tech1')? $('tech1').value.trim():'';
+    const tech2 = $('tech2')? $('tech2').value.trim():'';
+
+    // Validation
+    const errs = [];
+    if(!client) errs.push('Nom du client');
+    if(!machine) errs.push('Type et N° de la machine');
+    if(!motif) errs.push('Motif');
+    if(!dates) errs.push('Date(s) de l’intervention');
+    if(!objectif) errs.push('Objectif de l’intervention');
+    if(!contact) errs.push('Contact chez le client');
+    if(needsPN.has(code) && !pnSd) errs.push('N° PN/SD (obligatoire pour ce motif)');
+    if(code==='contrat' && split==='Oui' && (!tech1 || !tech2)) errs.push('Nom des 2 techniciens (OS splitté)');
+
+    if(errs.length){
+      alert('Merci de renseigner :\n- ' + errs.join('\n- '));
+      return null;
+    }
+
+    let corps = `Nom du client : ${client}\n`+
+                `Type et N° de la machine : ${machine}\n`+
+                `Motif de l’OS : ${motif}\n`+
+                `Date(s) de l’intervention : ${dates}\n`+
+                `Objectif de l’intervention : ${objectif}\n`+
+                `Nom d’un contact chez le client : ${contact}`;
+
+    if(needsPN.has(code)){
+      corps += `\nN° PN/SD : ${pnSd}`;
+    }
+    if(code==='contrat'){
+      corps += `\nOS splitté : ${split}  |  OS de calibration : ${calib}`;
+      if(split==='Oui'){
+        corps += `\nTechniciens : ${tech1} et ${tech2}`;
+      }
+      corps += `\n(merci de préciser formellement si OS splitté)`;
+    }
+    if(code==='garantie'){
+      corps += `\nGarantie : ${garantieEtat} (date à vérifier avec l’assistante / validation RTR)`;
+    }
+
+    const objet = `Demande de création d’OS – ${client} – ${machine}`;
+    return {objet, corps};
+  }
+
+  $('btnOutlook').addEventListener('click', function(){
+    const res = build();
+    if(!res) return;
+    const {objet, corps} = res;
+    const to='MUFRmaintenance@multivac.fr';
+    const cc='Emmanuel.nicolas@multivac.fr';
+    const url = `ms-outlook://compose?to=${enc(to)}&cc=${enc(cc)}&subject=${enc(objet)}&body=${enc(corps)}`;
+
+    // Try anchor click first (more reliable on iOS), fallback to location
+    const a = document.getElementById('deepLink');
+    a.href = url;
+    a.click();
+    setTimeout(()=>{ window.location.href = url; }, 100);
+  });
+})();
+</script>
+</body>
+</html>
